@@ -1,0 +1,1410 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HABIBI SMOKE — الحبيبي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Kufi+Arabic:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --gold: #c9a227;
+        --gold-light: #f0c040;
+        --gold-glow: #ffdf80;
+        --neon-teal: #00f5d4;
+        --neon-purple: #bf5fff;
+        --neon-red: #ff2d55;
+        --bg: #040406;
+        --bg2: #08080f;
+        --smoke: rgba(180, 160, 255, 0.04);
+        --text: #e8e0d0;
+        --text-dim: #7a7060;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Rajdhani", sans-serif;
+        overflow-x: hidden;
+        cursor: default;
+      }
+
+      /* ─── NOISE OVERLAY ─── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.35;
+      }
+
+      /* ─── NAV ─── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 3rem;
+        background: linear-gradient(
+          to bottom,
+          rgba(4, 4, 6, 0.95),
+          transparent
+        );
+        backdrop-filter: blur(2px);
+      }
+
+      .nav-logo {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.8rem;
+        letter-spacing: 0.15em;
+        color: var(--gold-light);
+        text-shadow:
+          0 0 20px var(--gold),
+          0 0 40px rgba(201, 162, 39, 0.4);
+        text-decoration: none;
+      }
+
+      .nav-logo span {
+        font-family: "Noto Kufi Arabic", sans-serif;
+        font-size: 1rem;
+        color: var(--neon-teal);
+        display: block;
+        letter-spacing: 0.05em;
+        text-shadow: 0 0 12px var(--neon-teal);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+        list-style: none;
+      }
+
+      .nav-links a {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1rem;
+        letter-spacing: 0.12em;
+        color: var(--text-dim);
+        text-decoration: none;
+        transition:
+          color 0.2s,
+          text-shadow 0.2s;
+      }
+
+      .nav-links a:hover {
+        color: var(--gold-light);
+        text-shadow: 0 0 10px var(--gold);
+      }
+
+      .nav-cta {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.9rem;
+        letter-spacing: 0.15em;
+        padding: 0.5rem 1.4rem;
+        border: 1px solid var(--gold);
+        color: var(--gold-light);
+        text-decoration: none;
+        transition: all 0.25s;
+        clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+        background: rgba(201, 162, 39, 0.05);
+      }
+
+      .nav-cta:hover {
+        background: rgba(201, 162, 39, 0.15);
+        box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+      }
+
+      /* ─── HERO ─── */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
+        padding: 8rem 2rem 4rem;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 50% 80%,
+            rgba(201, 162, 39, 0.08) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 50% 40% at 20% 50%,
+            rgba(191, 95, 255, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse 40% 30% at 80% 40%,
+            rgba(0, 245, 212, 0.05) 0%,
+            transparent 50%
+          ),
+          #040406;
+      }
+
+      /* animated smoke particles */
+      .smoke-container {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .smoke-particle {
+        position: absolute;
+        bottom: -100px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(200, 180, 255, 0.06) 0%,
+          transparent 70%
+        );
+        animation: smokeRise linear infinite;
+        filter: blur(20px);
+      }
+
+      .smoke-particle:nth-child(1) {
+        left: 10%;
+        width: 180px;
+        height: 180px;
+        animation-duration: 12s;
+        animation-delay: 0s;
+      }
+      .smoke-particle:nth-child(2) {
+        left: 30%;
+        width: 250px;
+        height: 250px;
+        animation-duration: 16s;
+        animation-delay: -3s;
+      }
+      .smoke-particle:nth-child(3) {
+        left: 55%;
+        width: 200px;
+        height: 200px;
+        animation-duration: 14s;
+        animation-delay: -6s;
+      }
+      .smoke-particle:nth-child(4) {
+        left: 75%;
+        width: 150px;
+        height: 150px;
+        animation-duration: 11s;
+        animation-delay: -2s;
+      }
+      .smoke-particle:nth-child(5) {
+        left: 90%;
+        width: 220px;
+        height: 220px;
+        animation-duration: 18s;
+        animation-delay: -9s;
+      }
+
+      @keyframes smokeRise {
+        0% {
+          transform: translateY(0) scale(1) rotate(0deg);
+          opacity: 0;
+        }
+        10% {
+          opacity: 1;
+        }
+        80% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-110vh) scale(2.5) rotate(30deg);
+          opacity: 0;
+        }
+      }
+
+      .hero-eyebrow {
+        font-family: "Noto Kufi Arabic", sans-serif;
+        font-size: 1rem;
+        color: var(--neon-teal);
+        letter-spacing: 0.2em;
+        text-shadow: 0 0 15px var(--neon-teal);
+        margin-bottom: 1.2rem;
+        animation: fadeUp 0.8s ease both;
+      }
+
+      .hero-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(4rem, 12vw, 10rem);
+        line-height: 0.9;
+        letter-spacing: 0.04em;
+        color: #fff;
+        animation: fadeUp 0.8s ease 0.15s both;
+      }
+
+      .hero-title .gold {
+        color: var(--gold-light);
+        text-shadow:
+          0 0 20px var(--gold),
+          0 0 60px rgba(201, 162, 39, 0.5),
+          0 0 120px rgba(201, 162, 39, 0.2);
+      }
+
+      .hero-title .arabic {
+        font-family: "Noto Kufi Arabic", sans-serif;
+        font-size: 0.55em;
+        display: block;
+        color: var(--neon-purple);
+        text-shadow:
+          0 0 20px var(--neon-purple),
+          0 0 40px rgba(191, 95, 255, 0.4);
+        letter-spacing: 0.1em;
+        margin-top: 0.2em;
+      }
+
+      .hero-sub {
+        font-size: 1.2rem;
+        font-weight: 300;
+        color: var(--text-dim);
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        margin: 1.5rem 0 2.5rem;
+        animation: fadeUp 0.8s ease 0.3s both;
+      }
+
+      .hero-sub strong {
+        color: var(--gold-light);
+        font-weight: 700;
+      }
+
+      .hero-badges {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+        animation: fadeUp 0.8s ease 0.45s both;
+      }
+
+      .badge {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        padding: 0.35rem 1rem;
+        border: 1px solid;
+        clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+      }
+
+      .badge-gold {
+        border-color: var(--gold);
+        color: var(--gold-light);
+        background: rgba(201, 162, 39, 0.08);
+      }
+      .badge-teal {
+        border-color: var(--neon-teal);
+        color: var(--neon-teal);
+        background: rgba(0, 245, 212, 0.05);
+      }
+      .badge-purple {
+        border-color: var(--neon-purple);
+        color: var(--neon-purple);
+        background: rgba(191, 95, 255, 0.05);
+      }
+
+      .hero-cta {
+        display: inline-flex;
+        gap: 1rem;
+        animation: fadeUp 0.8s ease 0.55s both;
+      }
+
+      .btn-primary {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.2em;
+        padding: 0.9rem 2.5rem;
+        background: linear-gradient(135deg, var(--gold) 0%, #8a6500 100%);
+        color: #000;
+        text-decoration: none;
+        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        box-shadow: 0 0 30px rgba(201, 162, 39, 0.4);
+        transition:
+          box-shadow 0.25s,
+          transform 0.2s;
+      }
+
+      .btn-primary:hover {
+        box-shadow: 0 0 50px rgba(201, 162, 39, 0.7);
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.2em;
+        padding: 0.9rem 2.5rem;
+        border: 1px solid var(--neon-teal);
+        color: var(--neon-teal);
+        text-decoration: none;
+        clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+        background: rgba(0, 245, 212, 0.05);
+        transition: all 0.25s;
+      }
+
+      .btn-secondary:hover {
+        background: rgba(0, 245, 212, 0.12);
+        box-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        color: var(--text-dim);
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        animation: pulse 2s ease infinite;
+      }
+
+      .scroll-indicator::after {
+        content: "";
+        width: 1px;
+        height: 40px;
+        background: linear-gradient(to bottom, var(--gold), transparent);
+      }
+
+      /* ─── DIVIDER ─── */
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          var(--gold),
+          var(--neon-teal),
+          transparent
+        );
+        opacity: 0.3;
+        margin: 0 4rem;
+      }
+
+      /* ─── TICKER ─── */
+      .ticker {
+        background: rgba(201, 162, 39, 0.06);
+        border-top: 1px solid rgba(201, 162, 39, 0.15);
+        border-bottom: 1px solid rgba(201, 162, 39, 0.15);
+        overflow: hidden;
+        padding: 0.7rem 0;
+        white-space: nowrap;
+      }
+
+      .ticker-inner {
+        display: inline-flex;
+        gap: 4rem;
+        animation: tickerScroll 25s linear infinite;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.9rem;
+        letter-spacing: 0.2em;
+        color: var(--gold);
+      }
+
+      .ticker-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .ticker-dot {
+        width: 4px;
+        height: 4px;
+        background: var(--neon-teal);
+        border-radius: 50%;
+        box-shadow: 0 0 6px var(--neon-teal);
+      }
+
+      @keyframes tickerScroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+
+      /* ─── SECTION HEADER ─── */
+      .section {
+        padding: 6rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .section-eyebrow {
+        font-family: "Noto Kufi Arabic", sans-serif;
+        font-size: 0.85rem;
+        color: var(--neon-teal);
+        letter-spacing: 0.25em;
+        text-shadow: 0 0 10px var(--neon-teal);
+        margin-bottom: 0.6rem;
+        text-transform: uppercase;
+      }
+
+      .section-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        line-height: 1;
+        letter-spacing: 0.04em;
+        color: #fff;
+        margin-bottom: 1rem;
+      }
+
+      .section-title .accent {
+        color: var(--gold-light);
+        text-shadow: 0 0 15px var(--gold);
+      }
+
+      .section-desc {
+        font-size: 1rem;
+        color: var(--text-dim);
+        max-width: 500px;
+        line-height: 1.7;
+        letter-spacing: 0.05em;
+      }
+
+      /* ─── PRODUCTS ─── */
+      .products-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-top: 5rem;
+      }
+
+      .product-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        min-height: 580px;
+        position: relative;
+        overflow: hidden;
+        border: 1px solid rgba(201, 162, 39, 0.1);
+        margin-bottom: 3px;
+        transition: border-color 0.4s;
+      }
+
+      .product-card:hover {
+        border-color: rgba(201, 162, 39, 0.35);
+      }
+
+      .product-card.reverse {
+        direction: rtl;
+      }
+
+      .product-card.reverse > * {
+        direction: ltr;
+      }
+
+      .product-img-wrap {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .product-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.8s ease;
+        filter: brightness(0.88) saturate(1.1);
+      }
+
+      .product-card:hover .product-img-wrap img {
+        transform: scale(1.04);
+        filter: brightness(1) saturate(1.2);
+      }
+
+      .product-img-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          rgba(4, 4, 6, 0.5) 0%,
+          transparent 60%
+        );
+        pointer-events: none;
+      }
+
+      .product-card.reverse .product-img-overlay {
+        background: linear-gradient(
+          to left,
+          rgba(4, 4, 6, 0.5) 0%,
+          transparent 60%
+        );
+      }
+
+      /* Neon corner accents */
+      .product-img-wrap::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 60px;
+        height: 60px;
+        border-top: 2px solid var(--neon-teal);
+        border-left: 2px solid var(--neon-teal);
+        box-shadow: inset 0 0 10px rgba(0, 245, 212, 0.1);
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+
+      .product-img-wrap::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 60px;
+        height: 60px;
+        border-bottom: 2px solid var(--gold);
+        border-right: 2px solid var(--gold);
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.4s;
+      }
+
+      .product-card:hover .product-img-wrap::before,
+      .product-card:hover .product-img-wrap::after {
+        opacity: 1;
+      }
+
+      .product-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 4rem 4rem 4rem 5rem;
+        background: var(--bg2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .product-card.reverse .product-info {
+        padding: 4rem 5rem 4rem 4rem;
+      }
+
+      .product-info::before {
+        content: "";
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(201, 162, 39, 0.05) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      .product-number {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 6rem;
+        line-height: 1;
+        color: rgba(201, 162, 39, 0.06);
+        position: absolute;
+        top: 1.5rem;
+        right: 2rem;
+        letter-spacing: -0.05em;
+        user-select: none;
+      }
+
+      .product-tag {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.7rem;
+        letter-spacing: 0.25em;
+        padding: 0.25rem 0.8rem;
+        border: 1px solid var(--neon-teal);
+        color: var(--neon-teal);
+        display: inline-block;
+        margin-bottom: 1.2rem;
+        clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+        background: rgba(0, 245, 212, 0.04);
+      }
+
+      .product-name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(2rem, 3.5vw, 3.2rem);
+        letter-spacing: 0.04em;
+        line-height: 1.05;
+        color: #fff;
+        margin-bottom: 0.4rem;
+      }
+
+      .product-name-ar {
+        font-family: "Noto Kufi Arabic", sans-serif;
+        font-size: 1rem;
+        color: var(--gold);
+        text-shadow: 0 0 10px rgba(201, 162, 39, 0.5);
+        margin-bottom: 1.5rem;
+        letter-spacing: 0.05em;
+      }
+
+      .product-desc {
+        font-size: 1rem;
+        color: var(--text-dim);
+        line-height: 1.75;
+        margin-bottom: 2rem;
+        max-width: 380px;
+        letter-spacing: 0.03em;
+      }
+
+      .product-desc strong {
+        color: var(--text);
+        font-weight: 700;
+      }
+
+      .product-features {
+        list-style: none;
+        margin-bottom: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .product-features li {
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        color: var(--text-dim);
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .product-features li::before {
+        content: "";
+        width: 20px;
+        height: 1px;
+        background: var(--gold);
+        flex-shrink: 0;
+      }
+
+      .product-features li strong {
+        color: var(--neon-teal);
+      }
+
+      .product-price-row {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .product-price {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.5rem;
+        color: var(--gold-light);
+        text-shadow: 0 0 15px var(--gold);
+        letter-spacing: 0.05em;
+      }
+
+      .product-price-sub {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        letter-spacing: 0.1em;
+        line-height: 1.4;
+      }
+
+      .btn-product {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.7rem;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.95rem;
+        letter-spacing: 0.2em;
+        padding: 0.8rem 2rem;
+        background: linear-gradient(135deg, var(--gold) 0%, #6b4e00 100%);
+        color: #000;
+        text-decoration: none;
+        clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+        transition: all 0.25s;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
+        width: fit-content;
+      }
+
+      .btn-product:hover {
+        box-shadow: 0 0 40px rgba(201, 162, 39, 0.6);
+        transform: translateY(-2px);
+      }
+
+      .btn-product .arrow {
+        font-size: 1rem;
+        transition: transform 0.2s;
+      }
+
+      .btn-product:hover .arrow {
+        transform: translateX(4px);
+      }
+
+      /* ─── STATS BAR ─── */
+      .stats-bar {
+        background: rgba(201, 162, 39, 0.04);
+        border-top: 1px solid rgba(201, 162, 39, 0.12);
+        border-bottom: 1px solid rgba(201, 162, 39, 0.12);
+        padding: 3.5rem 2rem;
+      }
+
+      .stats-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        text-align: center;
+      }
+
+      .stat-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 3.5rem;
+        color: var(--gold-light);
+        text-shadow: 0 0 20px var(--gold);
+        line-height: 1;
+        margin-bottom: 0.3rem;
+      }
+
+      .stat-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        color: var(--text-dim);
+        text-transform: uppercase;
+      }
+
+      /* ─── COMMUNITY ─── */
+      .community {
+        padding: 6rem 2rem;
+        background: radial-gradient(
+          ellipse 80% 60% at 50% 50%,
+          rgba(191, 95, 255, 0.04) 0%,
+          transparent 70%
+        );
+      }
+
+      .community-inner {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6rem;
+        align-items: center;
+      }
+
+      .community-text .section-desc {
+        max-width: 100%;
+        margin-top: 1.5rem;
+      }
+
+      .twitch-card {
+        background: rgba(191, 95, 255, 0.06);
+        border: 1px solid rgba(191, 95, 255, 0.2);
+        padding: 2rem;
+        position: relative;
+        clip-path: polygon(
+          16px 0,
+          100% 0,
+          100% calc(100% - 16px),
+          calc(100% - 16px) 100%,
+          0 100%,
+          0 16px
+        );
+      }
+
+      .twitch-live {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .live-dot {
+        width: 8px;
+        height: 8px;
+        background: #ff2d55;
+        border-radius: 50%;
+        box-shadow: 0 0 8px #ff2d55;
+        animation: pulse 1.5s ease infinite;
+      }
+
+      .live-text {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 0.2em;
+        color: #ff2d55;
+      }
+
+      .twitch-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.6rem;
+        letter-spacing: 0.05em;
+        color: #fff;
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+      }
+
+      .twitch-sub {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        letter-spacing: 0.08em;
+        margin-bottom: 1.5rem;
+      }
+
+      .twitch-viewers {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        color: var(--neon-purple);
+        margin-bottom: 1.5rem;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+      }
+
+      .social-link {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        padding: 0.4rem 1rem;
+        border: 1px solid rgba(191, 95, 255, 0.3);
+        color: var(--neon-purple);
+        text-decoration: none;
+        clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+        background: rgba(191, 95, 255, 0.06);
+        transition: all 0.25s;
+      }
+
+      .social-link:hover {
+        background: rgba(191, 95, 255, 0.15);
+        box-shadow: 0 0 15px rgba(191, 95, 255, 0.3);
+      }
+
+      /* ─── FOOTER ─── */
+      footer {
+        border-top: 1px solid rgba(201, 162, 39, 0.12);
+        padding: 3rem 2rem;
+        background: var(--bg2);
+      }
+
+      .footer-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-logo {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.4rem;
+        letter-spacing: 0.15em;
+        color: var(--gold-light);
+        text-shadow: 0 0 15px var(--gold);
+      }
+
+      .footer-arabic {
+        font-family: "Noto Kufi Arabic", sans-serif;
+        font-size: 1.8rem;
+        color: rgba(201, 162, 39, 0.2);
+        letter-spacing: 0.1em;
+      }
+
+      .footer-legal {
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        letter-spacing: 0.1em;
+        text-align: right;
+      }
+
+      .footer-legal a {
+        color: var(--text-dim);
+        text-decoration: none;
+      }
+
+      .footer-legal a:hover {
+        color: var(--gold);
+      }
+
+      /* ─── ANIMATIONS ─── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+
+      /* Reveal on scroll */
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition:
+          opacity 0.7s ease,
+          transform 0.7s ease;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 900px) {
+        .product-card,
+        .product-card.reverse {
+          grid-template-columns: 1fr;
+          direction: ltr;
+          min-height: auto;
+        }
+
+        .product-img-wrap {
+          height: 300px;
+        }
+
+        .product-info,
+        .product-card.reverse .product-info {
+          padding: 2.5rem 2rem;
+        }
+
+        .stats-inner {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .community-inner {
+          grid-template-columns: 1fr;
+          gap: 3rem;
+        }
+
+        nav {
+          padding: 1rem 1.5rem;
+        }
+        .nav-links {
+          display: none;
+        }
+
+        .footer-inner {
+          flex-direction: column;
+          text-align: center;
+        }
+        .footer-legal {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- NAV -->
+    <nav>
+      <a href="#" class="nav-logo">
+        HABIBI SMOKE
+        <span>حبيبي سموك</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#produkte">Produkte</a></li>
+        <li><a href="#community">Community</a></li>
+        <li><a href="#kontakt">Kontakt</a></li>
+      </ul>
+      <a href="#produkte" class="nav-cta">JETZT SHOPPEN</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="smoke-container">
+        <div class="smoke-particle"></div>
+        <div class="smoke-particle"></div>
+        <div class="smoke-particle"></div>
+        <div class="smoke-particle"></div>
+        <div class="smoke-particle"></div>
+      </div>
+
+      <p class="hero-eyebrow">ماشاء الله — Premium Shisha Accessoires</p>
+
+      <h1 class="hero-title">
+        <span class="gold">HABIBI</span><br />
+        SMOKE
+        <span class="arabic">الحبيبي سموك</span>
+      </h1>
+
+      <p class="hero-sub">
+        Für den <strong>echten Habibi</strong> — ob AMG, Scooter oder Uni
+      </p>
+
+      <div class="hero-badges">
+        <span class="badge badge-gold">✦ AMG & BMW kompatibel</span>
+        <span class="badge badge-teal">✦ Mashallah Quality</span>
+        <span class="badge badge-purple">✦ Community Approved</span>
+      </div>
+
+      <div class="hero-cta">
+        <a href="#produkte" class="btn-primary">PRODUKTE ENTDECKEN</a>
+        <a href="#community" class="btn-secondary">JOIN THE VIBE</a>
+      </div>
+
+      <div class="scroll-indicator">SCROLL</div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker">
+      <div class="ticker-inner">
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> SHISHA IM AMG</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> HABIBI SCOOTER EDITION</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> STUDENT LIFE MASHALLAH</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> GOLD PLATED VIBES</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> MADE FOR HABIBIS</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> والله QUALITÄT</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> SHISHA IM AMG</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> HABIBI SCOOTER EDITION</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> STUDENT LIFE MASHALLAH</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> GOLD PLATED VIBES</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> MADE FOR HABIBIS</span
+        >
+        <span class="ticker-item"
+          ><span class="ticker-dot"></span> والله QUALITÄT</span
+        >
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <section id="produkte" style="padding: 6rem 0 0">
+      <div class="section" style="padding-bottom: 2rem">
+        <p class="section-eyebrow reveal">منتجاتنا — Unsere Produkte</p>
+        <h2 class="section-title reveal">
+          DIE <span class="accent">COLLECTION</span><br />FÜR ECHTE HABIBIS
+        </h2>
+        <p class="section-desc reveal">
+          Drei Produkte. Eine Mission. Shisha überall — والله.
+        </p>
+      </div>
+
+      <div class="products-grid">
+        <!-- PRODUCT 1: CAR -->
+        <div class="product-card reveal">
+          <div class="product-img-wrap">
+            <img
+              src="car.png"
+              alt="Shisha Stand Mashallah im AMG"
+              loading="lazy"
+            />
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <span class="product-number">01</span>
+            <span class="product-tag">★ BESTSELLER ★</span>
+            <h3 class="product-name">SHISHA STAND<br />MASHALLAH</h3>
+            <p class="product-name-ar">ستاند الشيشة — ماشاء الله</p>
+            <p class="product-desc">
+              Der <strong>ultimative Car-Shisha-Stand</strong> für den echten
+              AMG- und BMW-Habibi. Passt perfekt in die Mittelkonsole, hält
+              bombenfest und macht dein Interior zum Lounge-Erlebnis auf vier
+              Rädern.
+            </p>
+            <ul class="product-features">
+              <li>Kompatibel mit <strong>Allen AMG & BMW Modellen</strong></li>
+              <li>Anti-Rutsch Halterung — hält auch bei 280 km/h</li>
+              <li>LED-Glow Base inklusive</li>
+              <li>Platz für 2 Schläuche — Habibi-Edition</li>
+            </ul>
+            <div class="product-price-row">
+              <span class="product-price">€ 349</span>
+              <span class="product-price-sub"
+                >inkl. MwSt.<br />versandkostenfrei</span
+              >
+            </div>
+            <a href="#kontakt" class="btn-product"
+              >IN DEN WARENKORB <span class="arrow">→</span></a
+            >
+          </div>
+        </div>
+
+        <!-- PRODUCT 2: SCOOTER -->
+        <div class="product-card reverse reveal">
+          <div class="product-img-wrap">
+            <img
+              src="scooter.png"
+              alt="Habibi Ride Scooter Shisha"
+              loading="lazy"
+            />
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <span class="product-number">02</span>
+            <span class="product-tag">⚡ NEW DROP</span>
+            <h3 class="product-name">HABIBI RIDE<br />SCOOT & SMOKE</h3>
+            <p class="product-name-ar">ركوب الحبيبي — سكوت آند سموك</p>
+            <p class="product-desc">
+              Kein AMG? Kein Problem. Der
+              <strong>Habibi Ride Scooter-Mount</strong> bringt deine Shisha auf
+              jeden E-Scooter der Welt. Goldfarbene Armaturen, arabische
+              Ornamente, maximale Swag-Dichte.
+            </p>
+            <ul class="product-features">
+              <li>Universal-Halterung für <strong>alle E-Scooter</strong></li>
+              <li>24k Gold-Finish Optik — Mashallah</li>
+              <li>Arabische Ornament-Gravuren</li>
+              <li>Mit integriertem LED-Schlauchhalter</li>
+            </ul>
+            <div class="product-price-row">
+              <span class="product-price">€ 249</span>
+              <span class="product-price-sub"
+                >inkl. MwSt.<br />versandkostenfrei</span
+              >
+            </div>
+            <a href="#kontakt" class="btn-product"
+              >IN DEN WARENKORB <span class="arrow">→</span></a
+            >
+          </div>
+        </div>
+
+        <!-- PRODUCT 3: DESK -->
+        <div class="product-card reveal">
+          <div class="product-img-wrap">
+            <img
+              src="desk.png"
+              alt="Habibi Student Shishamount"
+              loading="lazy"
+            />
+            <div class="product-img-overlay"></div>
+          </div>
+          <div class="product-info">
+            <span class="product-number">03</span>
+            <span class="product-tag">🎓 STUDENT SPECIAL</span>
+            <h3 class="product-name">HABIBI STUDENT<br />SHISHAMOUNT</h3>
+            <p class="product-name-ar">شيشا الطالب — حبيبي</p>
+            <p class="product-desc">
+              Lernen macht mehr Spaß mit Rauch. Der
+              <strong>Habibi Student Shishamount</strong> verwandelt jeden
+              Schulschreibtisch in eine Premium-Lounge. Neon-LED-Kanten,
+              Walnuss-Optik, arabische Arabesk-Gravuren.
+            </p>
+            <ul class="product-features">
+              <li>Für <strong>Uni & Schule</strong> geeignet — mashallah</li>
+              <li>Neon-LED-Beleuchtung in Teal & Gold</li>
+              <li>Walnut Finish mit Goldintarsien</li>
+              <li>Seitlich montierter Shisha-Arm 360° drehbar</li>
+            </ul>
+            <div class="product-price-row">
+              <span class="product-price">€ 189</span>
+              <span class="product-price-sub"
+                >inkl. MwSt.<br />versandkostenfrei</span
+              >
+            </div>
+            <a href="#kontakt" class="btn-product"
+              >IN DEN WARENKORB <span class="arrow">→</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <div class="stats-bar" style="margin-top: 5rem">
+      <div class="stats-inner">
+        <div class="reveal">
+          <div class="stat-num">4.200+</div>
+          <div class="stat-label">Habibis beliefert</div>
+        </div>
+        <div class="reveal">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Mashallah Rating</div>
+        </div>
+        <div class="reveal">
+          <div class="stat-num">3</div>
+          <div class="stat-label">Legendäre Produkte</div>
+        </div>
+        <div class="reveal">
+          <div class="stat-num">والله</div>
+          <div class="stat-label">Quality Promise</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMMUNITY -->
+    <section id="community" class="community">
+      <div class="community-inner">
+        <div class="community-text reveal">
+          <p class="section-eyebrow">المجتمع — Community</p>
+          <h2 class="section-title">
+            JOIN THE<br /><span class="accent">HABIBI</span> VIBE
+          </h2>
+          <p class="section-desc">
+            Shisha ist mehr als Rauch — es ist Kultur, Family, Lifestyle. Werde
+            Teil der Habibi Smoke Community auf Twitch, Discord und Instagram.
+            Zeig uns dein Setup, tag uns mit
+            <strong style="color: var(--gold)">#HabibiSmoke</strong> und werde
+            für immer unsterblich.
+          </p>
+          <div style="margin-top: 2rem" class="social-links">
+            <a href="#" class="social-link">TWITCH</a>
+            <a href="#" class="social-link">INSTAGRAM</a>
+            <a href="#" class="social-link">TIKTOK</a>
+            <a href="#" class="social-link">DISCORD</a>
+          </div>
+        </div>
+        <div class="twitch-card reveal">
+          <div class="twitch-live">
+            <div class="live-dot"></div>
+            <span class="live-text">LIVE AUF TWITCH</span>
+          </div>
+          <div class="twitch-title">
+            HABIBI SMOKE LIVE<br />SETUP TOUR & GIVEAWAY
+          </div>
+          <div class="twitch-sub">
+            Jeden Freitag 20:00 Uhr — Car Shisha Vibes
+          </div>
+          <div class="twitch-viewers">👁 3.847 Habibis schauen gerade</div>
+          <div
+            style="
+              height: 1px;
+              background: rgba(191, 95, 255, 0.2);
+              margin: 1rem 0;
+            "
+          ></div>
+          <p
+            style="
+              font-size: 0.8rem;
+              color: var(--text-dim);
+              letter-spacing: 0.08em;
+              line-height: 1.6;
+            "
+          >
+            Zeig uns deinen AMG mit Shisha-Stand und gewinn ein komplettes
+            Setup.<br />
+            <span style="color: var(--neon-teal)"
+              >#HabibiSmoke #MashallahVibes #ShishaImAMG</span
+            >
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="kontakt">
+      <div class="footer-inner">
+        <div>
+          <div class="footer-logo">HABIBI SMOKE</div>
+          <div
+            style="
+              font-size: 0.75rem;
+              color: var(--text-dim);
+              margin-top: 0.3rem;
+              letter-spacing: 0.1em;
+            "
+          >
+            contact@habibi-smoke.de
+          </div>
+        </div>
+        <div class="footer-arabic">حبيبي سموك</div>
+        <div class="footer-legal">
+          © 2025 Habibi Smoke GmbH<br />
+          <a href="#">Impressum</a> · <a href="#">Datenschutz</a> ·
+          <a href="#">AGB</a><br />
+          <span style="margin-top: 0.3rem; display: block"
+            >Made with ❤️ für alle Habibis</span
+          >
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Scroll reveal
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => entry.target.classList.add("visible"), i * 80);
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      // Nav shadow on scroll
+      const nav = document.querySelector("nav");
+      window.addEventListener("scroll", () => {
+        nav.style.background =
+          window.scrollY > 50
+            ? "rgba(4,4,6,0.97)"
+            : "linear-gradient(to bottom, rgba(4,4,6,0.95), transparent)";
+      });
+    </script>
+  </body>
+</html>
